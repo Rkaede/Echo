@@ -1,0 +1,19 @@
+# build & dependencies
+node_modules
+dist
+out
+
+# os
+.DS_Store
+
+# env
+.env
+
+# editors
+.vscode
+.claude
+
+# misc
+todo.md
+temp
+*.log*
