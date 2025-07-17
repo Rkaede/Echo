@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: groq-whisper-test
+appId: io.littlecove.echo
+productName: Echo
 directories:
   buildResources: build
 files:
@@ -12,21 +12,26 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: groq-whisper-test
+  executableName: Echo
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+afterSign: scripts/notarize.js
 mac:
+  entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  notarize: false  # We'll handle this manually with afterSign
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
-  notarize: false
 dmg:
+  sign: false
   artifactName: ${name}-${version}.${ext}
 linux:
   target:
