@@ -8,4 +8,14 @@ body {
   margin: 0;
   display: grid;
   place-items: center;
+  app-region: drag;
+  user-select: none;
+}
+
+button,
+input,
+textarea,
+label,
+select {
+  app-region: no-drag;
 }

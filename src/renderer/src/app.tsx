@@ -4,7 +4,7 @@ import { Settings } from './components/settings';
 import { useVoiceRecord } from './hooks/use-voice-record';
 import type { TranscriptionMessage } from './types';
 
-function App(): React.JSX.Element {
+function App() {
   const [currentPage, setCurrentPage] = useState<'overlay' | 'settings'>('overlay');
 
   const handleTranscriptionCopy = (transcription: { text: string; timestamp?: string }) => {

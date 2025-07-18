@@ -3,8 +3,9 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow, clipboard, ipcMain, Menu, nativeImage, screen, shell, Tray } from 'electron';
 import icon from '../../resources/menubar@2x.png?asset';
 import { initializeDatabase } from './services/db/db';
-import { transcribeAudioHandler } from './services/groq-audio';
+import { transcribeAudioHandler, validateGroqApiKey } from './services/groq-audio';
 import { clearShortcuts, registerShortcuts } from './services/shortcuts';
+import { getGroqApiKey, setGroqApiKey } from './services/store';
 import { paste } from './util/paste';
 
 let tray: Tray | null = null;
@@ -17,11 +18,13 @@ function createSettingsWindow(): void {
   }
 
   settingsWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 700,
+    height: 340,
     show: false,
+    resizable: false,
     autoHideMenuBar: true,
-    title: 'Groq Whisper Settings',
+    title: 'Settings',
+    titleBarStyle: 'hidden',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -156,6 +159,31 @@ app.whenReady().then(async () => {
     console.log('Transcription copied to clipboard:', message.text);
   });
 
+  // Settings handlers
+  ipcMain.handle('get-groq-api-key', () => {
+    return getGroqApiKey();
+  });
+
+  ipcMain.handle('set-groq-api-key', (_, apiKey: string) => {
+    setGroqApiKey(apiKey);
+  });
+
+  // Open external URL handler
+  ipcMain.handle('open-external', (_, url: string) => {
+    shell.openExternal(url);
+  });
+
+  // Close settings window handler
+  ipcMain.handle('close-settings', () => {
+    if (settingsWindow && !settingsWindow.isDestroyed()) {
+      settingsWindow.close();
+    }
+  });
+
+  // Validate API key handler
+  ipcMain.handle('validate-groq-api-key', validateGroqApiKey);
+
+  // init functions
   registerShortcuts();
   createWindow();
   createTray();

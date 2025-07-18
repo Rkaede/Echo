@@ -4,7 +4,13 @@ import { contextBridge, ipcRenderer } from 'electron';
 // Custom APIs for renderer
 const api = {
   transcribeAudio: (audioBuffer: ArrayBuffer): Promise<{ text: string; timestamp: string }> =>
-    ipcRenderer.invoke('transcribe-audio', audioBuffer)
+    ipcRenderer.invoke('transcribe-audio', audioBuffer),
+  getGroqApiKey: (): Promise<string> => ipcRenderer.invoke('get-groq-api-key'),
+  setGroqApiKey: (apiKey: string): Promise<void> => ipcRenderer.invoke('set-groq-api-key', apiKey),
+  openExternal: (url: string): Promise<void> => ipcRenderer.invoke('open-external', url),
+  closeSettings: (): Promise<void> => ipcRenderer.invoke('close-settings'),
+  validateGroqApiKey: (apiKey: string): Promise<{ valid: boolean; error?: string }> =>
+    ipcRenderer.invoke('validate-groq-api-key', apiKey)
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to
