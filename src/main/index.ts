@@ -2,7 +2,6 @@ import { join } from 'node:path';
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow, clipboard, ipcMain, Menu, nativeImage, screen, shell, Tray } from 'electron';
 import icon from '../../resources/menubar@2x.png?asset';
-import { validateEnvironment } from './env';
 import { initializeDatabase } from './services/db/db';
 import { transcribeAudioHandler } from './services/groq-audio';
 import { clearShortcuts, registerShortcuts } from './services/shortcuts';
@@ -131,16 +130,6 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
-  // Validate environment variables
-  try {
-    validateEnvironment();
-    console.log('Environment validation successful');
-  } catch (error) {
-    console.error('Environment validation failed:', error);
-    app.quit();
-    return;
-  }
-
   // Initialize database
   await initializeDatabase();
 
